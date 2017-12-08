@@ -8,6 +8,34 @@ function logtxt($string) {
   );
 }
 
+function exit_error($responsecode) {
+  global $start_time, $contents;
+  logtxt(
+    number_format(microtime(true) - $start_time, 4) .
+    " " .
+    json_encode($_GET) .
+    " " .
+    removePassword($contents) .
+    " ERROR" .
+    $responsecode
+  );
+
+  $returnable['q'] = $_GET['q'];
+  $returnable['responseString'] = "ERROR";
+  $returnable['responseCode'] = $responsecode;
+
+  // None of these "explanations" is displayed to the user; they are here to
+  // make the code and JSON more human-readable.
+  if($responsecode == 1)
+    $returnable['explanation'] = "There is no account with that email address.";
+  if($responsecode == 2)
+    $returnable['explanation'] = "Your account is not activated.";
+  if($responsecode == 3)
+    $returnable['explanation'] = "Incorrect password.";
+
+  exit(json_encode($returnable));
+}
+
 function removePassword($s) {
   $passwordPos = strpos($s, "password");
   if($passwordPos) {
@@ -49,7 +77,7 @@ function pdo_connect($db_user) {
    return $dbh;
 }
 
-function pdo_seleqt($query, $qs) {
+function pdo_select($query, $qs) {
    if(!is_array($qs)) {
       $qs = array($qs);
    }
@@ -68,7 +96,7 @@ function email_already_in_db($email, $include_noreg=true) {
    else {
       $noreg_clause = "";
    }
-   $email_row = pdo_seleqt("
+   $email_row = pdo_select("
       select count(*) as count
       from wrc_users
       where email = ?

@@ -1,4 +1,5 @@
 <?php
+header('Content-Type: application/json');
 require_once('config.php');
 session_start();
 
@@ -24,7 +25,6 @@ logtxt(
 );
 
 // If the required file didn't already exit:
-header('Content-Type: application/json');
 echo json_encode($ok_array, JSON_NUMERIC_CHECK);
 
 ?>
