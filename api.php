@@ -1,7 +1,7 @@
 <?php
 header('Content-Type: application/json');
+require_once('library/jwt_helper.php');
 require_once('config.php');
-session_start();
 
 $contents = file_get_contents("php://input");
 $post = json_decode($contents, true);
@@ -9,7 +9,8 @@ $post = json_decode($contents, true);
 // Initialize array that will be returned if no error.
 $ok_array = array(
   q => $_GET['q'],
-  responseString => "OK"
+  responseString => "OK",
+  userId => currentUserId()
 );
 
 $start_time = microtime(true);

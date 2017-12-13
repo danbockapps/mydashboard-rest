@@ -36,6 +36,35 @@ function exit_error($responsecode) {
   exit(json_encode($returnable));
 }
 
+function getToken($userId) {
+  return JWT::encode(
+    json_encode((object)['userId' => $userId]),      //Data to be encoded in the JWT
+    base64_decode(JWT_SECRET), // The signing key
+    'HS512'     // Algorithm used to sign the token, see https://tools.ietf.org/html/draft-ietf-jose-json-web-algorithms-40#section-3
+  );
+}
+
+function currentUserId() {
+  if(!isset($_SERVER['HTTP_AUTHORIZATION'])) {
+    return null;
+  }
+  else {
+    list($token) = sscanf($_SERVER['HTTP_AUTHORIZATION'], 'Bearer %s');
+    if($token) {
+      return getUserId($token);
+    }
+    else {
+      return null;
+    }
+  }
+}
+
+function getUserId($token) {
+  $decoded = JWT::decode($token, base64_decode(JWT_SECRET));
+  $obj = json_decode($decoded);
+  return $obj->userId;
+}
+
 function removePassword($s) {
   $passwordPos = strpos($s, "password");
   if($passwordPos) {
