@@ -1,6 +1,10 @@
 <?php
 header('Content-Type: application/json');
-require_once('library/jwt_helper.php');
+
+if($_SERVER['REQUEST_SCHEME'] == 'http') {
+  exit('HTTPS required. Not detected.');
+}
+
 require_once('includes/config.php');
 
 $contents = file_get_contents("php://input");
