@@ -25,6 +25,7 @@ if($qr[0]['password'] != $in_hashd_passwd)
 else {
   // Login successful
   $ok_array['token'] = getToken($qr[0]['user_id']);
+  $ok_array['userId'] = $qr[0]['user_id'];
   
   $ok_array['fname'] = $qr[0]['fname'];
   $ok_array['lname'] = $qr[0]['lname'];
