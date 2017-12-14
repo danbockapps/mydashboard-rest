@@ -1,4 +1,6 @@
 <?php
+require_once(dirname(__FILE__) . '/../library/jwt_helper.php');
+
 function logtxt($string) {
   file_put_contents(
     LOG_FILE,
@@ -38,9 +40,9 @@ function exit_error($responsecode) {
 
 function getToken($userId) {
   return JWT::encode(
-    json_encode((object)['userId' => $userId]),      //Data to be encoded in the JWT
-    base64_decode(JWT_SECRET), // The signing key
-    'HS512'     // Algorithm used to sign the token, see https://tools.ietf.org/html/draft-ietf-jose-json-web-algorithms-40#section-3
+    json_encode((object)['userId' => $userId, 'iat' => time()]),
+    base64_decode(JWT_SECRET),
+    'HS512'
   );
 }
 
@@ -62,6 +64,8 @@ function currentUserId() {
 function getUserId($token) {
   $decoded = JWT::decode($token, base64_decode(JWT_SECRET));
   $obj = json_decode($decoded);
+  // $obj has the issued-at date ($obj['iat']) in case we ever want to do
+  // anything with that.
   return $obj->userId;
 }
 
