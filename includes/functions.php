@@ -70,15 +70,10 @@ function getUserId($token) {
 }
 
 function removePassword($s) {
-  $passwordPos = strpos($s, "password");
-  if($passwordPos) {
-    $openingQuotePos = $passwordPos + 10;
-    $closingQuotePos = $openingQuotePos +
-        strpos(substr($s, $openingQuotePos + 1), '"');
-    return
-      substr($s, 0, $openingQuotePos + 1) .
-      "xxxxxxxx" .
-      substr($s, $closingQuotePos + 1);
+  $obj = json_decode($s);
+  if(isset($obj->password)) {
+    $obj->password = 'zzzzzzzz';
+    return json_encode($obj);
   }
   else {
     return $s;
