@@ -2,10 +2,13 @@
 require_once(dirname(__FILE__) . '/../library/jwt_helper.php');
 
 function logtxt($string) {
+  global $ok_array;
   file_put_contents(
     LOG_FILE,
-    date("Y-m-d G:i:s") . " " . $_SERVER['REMOTE_ADDR'] . " " .
-        $_SESSION['userid'] . " " . $string . "\n",
+    (isset($ok_array['userId']) ? $ok_array['userId'] . ' ' : '') .
+    date("Y-m-d H:i:s") . " " .
+    $_SERVER['REMOTE_ADDR'] . " " .
+    $string . "\n",
     FILE_APPEND
   );
 }
@@ -34,6 +37,8 @@ function exit_error($responsecode) {
     $returnable['explanation'] = "Your account is not activated.";
   if($responsecode == 3)
     $returnable['explanation'] = "Incorrect password.";
+  if($responsecode == 4)
+    $returnable['explanation'] = "Invalid token.";
 
   exit(json_encode($returnable));
 }
@@ -62,7 +67,13 @@ function currentUserId() {
 }
 
 function getUserId($token) {
-  $decoded = JWT::decode($token, base64_decode(JWT_SECRET));
+  try {
+    $decoded = JWT::decode($token, base64_decode(JWT_SECRET));
+  }
+  catch (Exception $e) {
+    logtxt('JWT exception: ' . $e);
+    exit_error(4);
+  }
   $obj = json_decode($decoded);
   // $obj has the issued-at date ($obj['iat']) in case we ever want to do
   // anything with that.
