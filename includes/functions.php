@@ -31,14 +31,22 @@ function exit_error($responsecode) {
 
   // None of these "explanations" is displayed to the user; they are here to
   // make the code and JSON more human-readable.
-  if($responsecode == 1)
+  if($responsecode == 1) {
+    http_response_code(401);
     $returnable['explanation'] = "There is no account with that email address.";
-  if($responsecode == 2)
+  }
+  if($responsecode == 2) {
+    http_response_code(401);
     $returnable['explanation'] = "Your account is not activated.";
-  if($responsecode == 3)
+  }
+  if($responsecode == 3) {
+    http_response_code(401);
     $returnable['explanation'] = "Incorrect password.";
-  if($responsecode == 4)
+  }
+  if($responsecode == 4) {
+    http_response_code(400);
     $returnable['explanation'] = "Invalid token.";
+  }
 
   exit(json_encode($returnable));
 }
