@@ -151,4 +151,24 @@ function email_already_in_db($email, $include_noreg=true) {
    return $email_row[0]['count'];
 }
 
+function currentInstructor($participantId) {
+  $qr = pdo_select('
+    select c.instructor_id
+    from
+      enrollment_view e
+      natural join current_classes c
+    where
+      e.user_id = ? and
+      start_dttm in (
+        select max(start_dttm)
+        from
+           enrollment_view e
+           natural join current_classes
+        where user_id = ?
+     )
+  ', array($participantId, $participantId));
+
+  return $qr[0]['instructor_id'];
+}
+
 ?>
