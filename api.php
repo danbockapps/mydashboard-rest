@@ -21,15 +21,19 @@ $start_time = microtime(true);
 require('includes/' . $_GET['q'] . ".php");
 $end_time = microtime(true);
 
+$response = json_encode($ok_array, JSON_NUMERIC_CHECK);
+
 logtxt(
   number_format($end_time - $start_time, 4) .
   " " .
   json_encode($_GET) .
   " " .
-  removePassword($contents)
+  removePassword($contents) .
+  " " .
+  strlen($response)
 );
 
 // If the required file didn't already exit:
-echo json_encode($ok_array, JSON_NUMERIC_CHECK);
+echo $response;
 
 ?>
