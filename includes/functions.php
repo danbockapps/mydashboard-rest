@@ -171,4 +171,35 @@ function currentInstructor($participantId) {
   return $qr[0]['instructor_id'];
 }
 
+function current_class_by_user($userId) {
+   $qr = pdo_select("
+      select
+         class_id,
+         class_source,
+         start_dttm,
+         smart_goal,
+         instructor_id
+      from
+         enrollment_view
+         natural join current_classes
+      where
+         user_id = ? and
+         /* most recent class for this participant */
+         start_dttm in (
+            select max(start_dttm)
+            from
+               enrollment_view
+               natural join current_classes
+            where user_id = ?
+         )
+   ", array($userId, $userId));
+   if(count($qr) > 1) {
+      throw new Exception("Unexpected records returned.");
+   }
+   if(count($qr) == 0) {
+      return array();
+   }
+   return $qr[0];
+}
+
 ?>
