@@ -136,6 +136,28 @@ function pdo_select($query, $qs) {
    return $sth->fetchAll();
 }
 
+function select_one_record($query, $qs) {
+   $qr = pdo_select($query, $qs);
+   if(count($qr) == 1) {
+      return $qr[0];
+   }
+   else {
+      throw new Exception("Unexpected records returned.");
+   }
+}
+
+function pdo_insert($sql, $qs = null) {
+   $dbh = pdo_connect("dbreg_insert");
+   $sth = $dbh->prepare($sql);
+   return $sth->execute(is_array($qs) ? $qs : array($qs));
+}
+
+function pdo_update($sql, $qs = null) {
+   $dbh = pdo_connect("dbreg_update");
+   $sth = $dbh->prepare($sql);
+   return $sth->execute(is_array($qs) ? $qs : array($qs));
+}
+
 function email_already_in_db($email, $include_noreg=true) {
    if(!$include_noreg) {
       $noreg_clause = " and password != 'TRACKER_NO_REG'";
