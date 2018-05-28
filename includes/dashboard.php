@@ -1,5 +1,9 @@
 <?php
 
+//TODO Refactor the weight query and the class query to two separate files.
+// We do need class data on app startup, but not subsequent times this is
+// called (e.g. from postNewData).
+
 $ok_array['weight'] = pdo_select('
   select
     r.week_id - 1 as week, /* week IDs are zero-based from now on */

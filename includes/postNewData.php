@@ -63,4 +63,10 @@ pdo_update('
   $post['weekId'] + 1
 ));
 
+/***********************/
+/* Return updated data */
+/***********************/
+
+include('dashboard.php');
+
 ?>
