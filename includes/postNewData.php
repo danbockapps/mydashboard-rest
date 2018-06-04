@@ -2,7 +2,7 @@
 
 /* Parameters accepted:
     classId
-    weekId
+    week
     weight
     aerobicMinutes
     strengthMinutes
@@ -25,7 +25,7 @@ $qr = select_one_record('
     user_id = ?
     and class_id = ?
     and week_id = ?
-', array($userId, $post['classId'], $post['weekId'] + 1));
+', array($userId, $post['classId'], $post['week'] + 1));
 
 /*********************/
 /* If not, create it */
@@ -35,7 +35,7 @@ if($qr['count'] == 0) {
   pdo_insert('
     insert into wrc_reports (user_id, class_id, class_source, week_id)
     values (?, ?, ?, ?)
-  ', array($userId, $post['classId'], 'w', $post['weekId'] + 1));
+  ', array($userId, $post['classId'], 'w', $post['week'] + 1));
 }
 
 /************************************************/
@@ -60,7 +60,7 @@ pdo_update('
   $post['avgSteps'],
   $userId,
   $post['classId'],
-  $post['weekId'] + 1
+  $post['week'] + 1
 ));
 
 /***********************/
