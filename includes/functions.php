@@ -47,6 +47,10 @@ function exit_error($responsecode) {
     http_response_code(400);
     $returnable['explanation'] = "Invalid token.";
   }
+  if($responsecode == 5) {
+    http_response_code(405);
+    $returnable['explanation'] = "Invalid request method.";
+  }
 
   exit(json_encode($returnable));
 }
