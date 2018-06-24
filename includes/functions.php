@@ -32,7 +32,7 @@ function exit_error($responsecode) {
   // None of these "explanations" is displayed to the user; they are here to
   // make the code and JSON more human-readable.
   if($responsecode == 1) {
-    http_response_code(401);
+    http_response_code(401); // 401: Unauthorized
     $returnable['explanation'] = "There is no account with that email address.";
   }
   if($responsecode == 2) {
@@ -44,14 +44,21 @@ function exit_error($responsecode) {
     $returnable['explanation'] = "Incorrect password.";
   }
   if($responsecode == 4) {
-    http_response_code(400);
+    http_response_code(400); // 400: Bad request
     $returnable['explanation'] = "Invalid token.";
   }
   if($responsecode == 5) {
-    http_response_code(405);
+    http_response_code(405); // 405: Method not allowed
     $returnable['explanation'] = "Invalid request method.";
   }
-
+  if($responsecode == 6) {
+    http_response_code(400);
+    $returnable['explanation'] = "Message too long.";
+  }
+  if($responsecode == 7) {
+    http_response_code(500); // 500: Internal server error
+    $returnable['explanation'] = "Catchall server error";
+  }
   exit(json_encode($returnable));
 }
 
@@ -226,6 +233,14 @@ function current_class_by_user($userId) {
       return array();
    }
    return $qr[0];
+}
+
+function sendById($recipientId, $messageId, $participantId=-1) {
+   if(!is_numeric($recipientId) || !is_numeric($messageId) || !is_numeric($participantId)) {
+      exit_error(7);
+   }
+   $executable = "php-cli messageById.php $recipientId $messageId $participantId > /dev/null &";
+   exec($executable);
 }
 
 ?>
