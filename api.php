@@ -33,6 +33,8 @@ logtxt(
   strlen($response)
 );
 
+debug($response);
+
 // If the required file didn't already exit:
 echo $response;
 

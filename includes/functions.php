@@ -13,6 +13,12 @@ function logtxt($string) {
   );
 }
 
+function debug($string) {
+  if(DEBUG) {
+    logtxt('DEBUG ' . $string);
+  }
+}
+
 function exit_error($responsecode) {
   global $start_time, $contents;
   logtxt(
